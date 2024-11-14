@@ -19,6 +19,13 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+
+            // Colunas adicionais que você solicitou
+            $table->string('cpf')->unique(); // CPF
+            $table->date('datanascimento'); // Data de nascimento
+            $table->string('telefone'); // Telefone
+            $table->string('endereco'); // Endereço
+            $table->text('historicomedico')->nullable(); // Histórico médico (opcional)
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
