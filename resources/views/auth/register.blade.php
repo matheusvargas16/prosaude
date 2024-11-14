@@ -7,10 +7,11 @@
 
         <!-- Nome -->
         <div>
-            <x-input-label for="nome" :value="__('Nome')" />
-            <x-text-input id="nome" class="block mt-1 w-full" type="text" name="nome" :value="old('nome')" required autofocus placeholder="Seu nome" />
-            <x-input-error :messages="$errors->get('nome')" class="mt-2" />
+            <x-input-label for="name" :value="__('Nome')" />
+            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus placeholder="Seu nome" />
+            <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
+
 
         <!-- CPF -->
         <div class="mt-4">
@@ -18,6 +19,7 @@
             <x-text-input id="cpf" class="block mt-1 w-full" type="text" name="cpf" :value="old('cpf')" required placeholder="000.000.000-00" />
             <x-input-error :messages="$errors->get('cpf')" class="mt-2" />
         </div>
+
 
         <!-- Data de Nascimento -->
         <div class="mt-4">
@@ -56,16 +58,16 @@
 
         <!-- Senha -->
         <div class="mt-4">
-            <x-input-label for="senha" :value="__('Senha')" />
-            <x-text-input id="senha" class="block mt-1 w-full" type="password" name="senha" required autocomplete="new-password" placeholder="Sua senha" />
-            <x-input-error :messages="$errors->get('senha')" class="mt-2" />
+            <x-input-label for="password" :value="__('Senha')" />
+            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" placeholder="Sua senha" />
+            <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <!-- Confirmação da Senha -->
         <div class="mt-4">
-            <x-input-label for="senha_confirmation" :value="__('Confirme sua Senha')" />
-            <x-text-input id="senha_confirmation" class="block mt-1 w-full" type="password" name="senha_confirmation" required placeholder="Confirme sua senha" />
-            <x-input-error :messages="$errors->get('senha_confirmation')" class="mt-2" />
+            <x-input-label for="password_confirmation" :value="__('Confirme sua Senha')" />
+            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required placeholder="Confirme sua senha" />
+            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-between mt-6">

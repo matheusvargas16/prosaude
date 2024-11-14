@@ -9,36 +9,55 @@ class SuporteController extends Controller
 {
     public function index()
     {
-        $suportes = Suporte::all();
-        return view('suportes.index', compact('suportes'));
-    }
+        // Buscar todos os tickets do usuário logado
+        $suportes = Suporte::where('user_id', auth()->id())->get();
 
-    public function create()
-    {
-        return view('suportes.create');
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'status' => 'required|string',
-            'descricao' => 'required|string',
-        ]);
-
-        Suporte::create($request->all());
-        return redirect()->route('suportes.index');
+        // Retornar a view com os tickets
+        return view('suporte.index', compact('suportes'));
     }
 
     public function show($id)
     {
+        // Busca o ticket pelo ID (com a coluna 'id')
         $suporte = Suporte::findOrFail($id);
-        return view('suportes.show', compact('suporte'));
+
+        // Retorna a view com os detalhes do ticket
+        return view('suporte.show', compact('suporte'));
     }
+
+
+
+
+    public function create()
+    {
+        return view('suporte.criar'); // Apenas retorna a view do formulário
+    }
+
+    public function store(Request $request)
+    {
+        // Validação do formulário
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'descricao' => 'required|string|max:500',
+        ]);
+
+        // Cria o novo ticket
+        $suporte = new Suporte();
+        $suporte->titulo = $request->input('titulo');
+        $suporte->descricao = $request->input('descricao');
+        $suporte->status = 'Aberto'; // Definindo o status inicial
+        $suporte->user_id = auth()->id(); // Associando ao usuário logado
+        $suporte->save(); // Salva no banco de dados
+
+        // Redireciona com uma mensagem de sucesso
+        return redirect()->route('suporte.index')->with('status', 'Ticket criado com sucesso!');
+    }
+
 
     public function edit($id)
     {
         $suporte = Suporte::findOrFail($id);
-        return view('suportes.edit', compact('suporte'));
+        return view('suporte.edit', compact('suporte'));
     }
 
     public function update(Request $request, $id)
@@ -50,13 +69,13 @@ class SuporteController extends Controller
 
         $suporte = Suporte::findOrFail($id);
         $suporte->update($request->all());
-        return redirect()->route('suportes.index');
+        return redirect()->route('suporte.index');
     }
 
     public function destroy($id)
     {
         $suporte = Suporte::findOrFail($id);
         $suporte->delete();
-        return redirect()->route('suportes.index');
+        return redirect()->route('suporte.index');
     }
 }

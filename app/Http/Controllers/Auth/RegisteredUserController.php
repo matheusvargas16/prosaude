@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Carbon\Carbon;
 
 class RegisteredUserController extends Controller
 {
@@ -29,35 +30,38 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // Validação dos campos
+        // Validação dos dados
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'cpf' => ['required', 'string', 'size:14'], // Validando o CPF no formato 000.000.000-00
-            'endereco' => ['required', 'string', 'max:255'],
-            'telefone' => ['required', 'string', 'size:15'], // Validando o telefone no formato (XX) XXXXX-XXXX
+            'cpf' => ['required', 'string', 'max:14', 'unique:users,cpf'], // Verifique se 'cpf' está sendo validado corretamente
             'datanascimento' => ['required', 'date'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'endereco' => ['required', 'string', 'max:255'],
+            'telefone' => ['required', 'string', 'max:15'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'historicomedico' => ['nullable', 'string'],
         ]);
 
-        // Criação do usuário com os dados adicionais
+        // Cálculo da idade
+        $idade = Carbon::parse($request->datanascimento)->age;
+
+        // Criação do novo usuário com todos os campos
         $user = User::create([
             'name' => $request->name,
+            'cpf' => $request->cpf, // Certifique-se de salvar o CPF
+            'datanascimento' => $request->datanascimento,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'cpf' => $request->cpf,
             'endereco' => $request->endereco,
             'telefone' => $request->telefone,
-            'datanascimento' => $request->datanascimento,
+            'idade' => $idade,
+            'historicomedico' => $request->historicomedico,
+            'password' => Hash::make($request->password),
         ]);
 
-        // Dispara o evento de registro
         event(new Registered($user));
 
-        // Loga o usuário automaticamente
         Auth::login($user);
 
-        // Redireciona para o dashboard
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('dashboard'));
     }
 }

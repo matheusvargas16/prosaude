@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\Apolice;
 
 class ProfileController extends Controller
 {
@@ -16,10 +17,16 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        // Obtenha as apólices do usuário autenticado
+        $apolices = Apolice::where('usuario_id', operator: Auth::id())->with('plano')->get();
+
         return view('profile.edit', [
             'user' => $request->user(),
+            'apolices' => $apolices, // Passe as apólices para a view
         ]);
     }
+
+
 
     /**
      * Update the user's profile information.

@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 class ApoliceController extends Controller
 {
+
+    
     public function index()
     {
         $apolices = Apolice::all(); // Aqui você pode adicionar filtros, se necessário
@@ -25,7 +27,7 @@ class ApoliceController extends Controller
         $request->validate([
             'plano_id' => 'required|exists:planos,id',
             'status' => 'required|string',
-            'valor' => 'required|numeric',
+            'preco' => 'required|numeric',
             'descricao' => 'nullable|string',
             'alteracao' => 'nullable|string',
             'datainicio' => 'required|date',

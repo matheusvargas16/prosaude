@@ -15,6 +15,21 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <!-- Novo link Comprar -->
+                    <x-nav-link :href="route('comprar.planos')" :active="request()->routeIs('comprar.planos')">
+                        {{ __('Comprar') }}
+                    </x-nav-link>
+
+                    <!-- Novo link Pesquisar Planos -->
+                    <x-nav-link :href="route('pesquisarPlanos')" :active="request()->routeIs('pesquisarPlanos')">
+                        {{ __('Pesquisar Planos') }}
+                    </x-nav-link>
+
+                    <!-- Novo link Suporte -->
+                    <x-nav-link :href="route('suporte.index')" :active="request()->routeIs('suporte.index')">
+                        {{ __('Suporte') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -69,6 +84,21 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+
+            <!-- Novo link Comprar (versão mobile) -->
+            <x-responsive-nav-link :href="route('comprar.planos')" :active="request()->routeIs('comprar.planos')">
+                {{ __('Comprar') }}
+            </x-responsive-nav-link>
+
+            <!-- Novo link Pesquisar Planos (versão mobile) -->
+            <x-responsive-nav-link :href="route('pesquisarPlanos')" :active="request()->routeIs('pesquisarPlanos')">
+                {{ __('Pesquisar Planos') }}
+            </x-responsive-nav-link>
+
+            <!-- Novo link Suporte (versão mobile) -->
+            <x-responsive-nav-link :href="route('suporte.index')" :active="request()->routeIs('suporte.index')">
+                {{ __('Suporte') }}
             </x-responsive-nav-link>
         </div>
 

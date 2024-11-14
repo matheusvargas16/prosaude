@@ -14,18 +14,16 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('cpf')->unique();
+            $table->date('datanascimento');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('endereco');
+            $table->string('telefone');
+            $table->text('historicomedico')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-
-            // Colunas adicionais que você solicitou
-            $table->string('cpf')->unique(); // CPF
-            $table->date('datanascimento'); // Data de nascimento
-            $table->string('telefone'); // Telefone
-            $table->string('endereco'); // Endereço
-            $table->text('historicomedico')->nullable(); // Histórico médico (opcional)
+            $table->timestamp('email_verified_at')->nullable();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

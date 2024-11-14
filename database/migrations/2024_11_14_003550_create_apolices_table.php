@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');  // Chave estrangeira para a tabela 'users'
             $table->foreignId('plano_id')->constrained()->onDelete('cascade');
             $table->enum('status', ['pendente', 'ativa', 'cancelada', 'expirada']);
-            $table->decimal('valor', 8, 2);
+            $table->decimal('preco', 8, 2);
             $table->text('descricao')->nullable();
             $table->boolean('alteracao')->default(false);
             $table->date('datainicio');

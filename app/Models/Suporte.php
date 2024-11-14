@@ -9,19 +9,16 @@ class Suporte extends Model
 {
     use HasFactory;
 
-    // Definindo os campos que podem ser preenchidos
-    protected $fillable = [
-        'user_id',  // ID do usuário que fez a solicitação
-        'mensagem', // Mensagem do usuário
-        'status',   // Status da solicitação (pendente, resolvido, etc)
-    ];
+    protected $primaryKey = 'id'; // Certifique-se de que o nome do campo da chave primária está correto
+
+    protected $table = 'suporte'; // Nome da tabela
+
+    protected $fillable = ['titulo', 'mensagem', 'status', 'user_id']; // Campos preenchíveis
 
     // Relacionamento com o usuário
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class); // Relação com o modelo User
     }
-
-    // Caso você queira personalizar o nome da tabela no banco, faça isso:
-    // protected $table = 'suportes';
 }
+
