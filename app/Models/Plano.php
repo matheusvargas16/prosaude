@@ -12,4 +12,7 @@ class Plano extends Model
     protected $fillable = [
         'nome', 'tipo', 'cobertura', 'faixaetaria', 'preco',
     ];
+
+    
 }
+

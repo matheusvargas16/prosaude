@@ -11,10 +11,7 @@
                 <div class="p-6 text-gray-900">
                     <!-- Detalhes do Plano -->
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ $plano->nome }}</h3>
-                    <p class="text-gray-700 mb-4"><strong>Descrição:</strong> {{ $plano->descricao }}</p>
                     <p class="text-gray-700 mb-4"><strong>Preço:</strong> R$ {{ number_format($plano->preco, 2, ',', '.') }}</p>
-                    <p class="text-gray-700 mb-4"><strong>Tipo de Plano:</strong> {{ $plano->tipo }}</p>
-                    <p class="text-gray-700 mb-4"><strong>Área de Cobertura:</strong> {{ $plano->cobertura }}</p>
 
                     <!-- Formulário para finalizar a compra -->
                     <form method="POST" action="{{ route('confirmar.compra', $plano->id) }}">
@@ -34,16 +31,25 @@
                             <x-text-input id="endereco" name="endereco" type="text" class="mt-1 block w-full" required />
                         </div>
                     
-                        <button type="submit" class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg">
+                        <button type="submit" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg">
                             Confirmar Compra
                         </button>
                     </form>
                     
-
                     <!-- Botão para voltar -->
                     <a href="{{ route('comprar.planos') }}" class="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg">
                         Voltar para Planos
                     </a>
+
+                    <!-- Exibição de Benefícios (Cobertura) -->
+                    <div class="mb-4">
+                        <h3 class="text-xl font-semibold text-teal-600">Cobertura / Benefícios</h3>
+                        <ul class="list-disc pl-5">
+                            @foreach (json_decode($plano->cobertura) as $beneficio)
+                                <li class="text-lg">{{ $beneficio }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

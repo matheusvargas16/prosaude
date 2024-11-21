@@ -17,17 +17,38 @@
                             <p><strong>Plano:</strong> {{ $apolice->plano->nome }}</p>
 
                             <!-- Formatar as datas -->
-                            <p><strong>Data de Início:</strong> {{ \Carbon\Carbon::parse($apolice->datainicio)->format('d/m/Y') }}</p>
                             <p><strong>Data de Vencimento:</strong> {{ \Carbon\Carbon::parse($apolice->datafim)->format('d/m/Y') }}</p>
 
                             <!-- Mostrar o valor -->
                             <p><strong>Valor Mensal:</strong> R$ {{ number_format($apolice->preco, 2, ',', '.') }}</p>
+
+                            <!-- Botão de Cancelar Plano -->
+                            @if ($apolice->status === 'ativa')
+                                <form action="{{ route('cancelar.apolice', $apolice->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja cancelar esta apólice?')">
+                                    @csrf
+                                    @method('PUT') <!-- Usando PUT para atualização -->
+                                    <button type="submit" class="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition duration-300">
+                                        Cancelar Apólice
+                                    </button>
+                                </form>
+                            @else
+                                <p class="text-gray-600 mt-2"><strong>Status:</strong> {{ $apolice->status }}</p>
+                            @endif
                         </div>
                     @empty
                         <p>Você ainda não possui apólices cadastradas.</p>
                     @endforelse
                 </div>
             </div>
+
+            
+            <!-- Botão de Histórico de Apólices -->
+            <div class="mt-4 text-center">
+                <a href="{{ route('historico.apolices') }}" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition duration-300">
+                    Histórico de Apólices
+                </a>
+            </div>
+
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     @include('profile.partials.update-profile-information-form', ['label' => 'Informações do Perfil'])

@@ -24,18 +24,32 @@ class ApoliceController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        // Validação dos dados de entrada
+        $validated = $request->validate([
             'plano_id' => 'required|exists:planos,id',
-            'status' => 'required|string',
-            'preco' => 'required|numeric',
-            'descricao' => 'nullable|string',
-            'alteracao' => 'nullable|string',
-            'datainicio' => 'required|date',
-            'datafim' => 'required|date',
         ]);
 
-        Apolice::create($request->all()); // Cria a apólice no banco
-        return redirect()->route('apolices.index');
+        // Obter o usuário autenticado
+        $user = auth()->user();
+
+        // Verificar se o usuário já possui uma apólice ativa
+        $apoliceAtiva = Apolice::where('user_id', $user->id)
+            ->where('status', 'Ativa')
+            ->first();
+
+        // Se houver uma apólice ativa, desativá-la
+        if ($apoliceAtiva) {
+            $apoliceAtiva->update(['status' => 'Inativa']);
+        }
+
+        // Criar a nova apólice como ativa
+        Apolice::create([
+            'user_id' => $user->id,
+            'plano_id' => $validated['plano_id'],
+            'status' => 'Ativa',
+        ]);
+
+        return redirect()->route('apolices.index')->with('status', 'Nova apólice criada com sucesso!');
     }
 
     public function show($id)
@@ -68,10 +82,39 @@ class ApoliceController extends Controller
         return redirect()->route('apolices.index');
     }
 
-    public function destroy($id)
+    public function historico()
     {
-        $apolice = Apolice::findOrFail($id);
-        $apolice->delete(); // Deleta a apólice
-        return redirect()->route('apolices.index');
+        // Buscar todas as apólices do usuário com status 'Cancelada'
+        $apolicesCanceladas = Apolice::where('usuario_id', auth()->id())
+            ->where('status', 'Cancelada')
+            ->get();
+
+        // Retornar a view com as apólices canceladas
+        return view('profile.historico', compact('apolicesCanceladas'));
     }
+
+    public function cancel($id)
+    {
+        // Encontrar a apólice pelo ID
+        $apolice = Apolice::findOrFail($id);
+
+        // Verificar se a apólice pertence ao usuário autenticado
+        if ($apolice->usuario_id !== auth()->id()) {
+            // Se não for o proprietário da apólice, negar acesso
+            abort(403, 'Acesso negado.');
+        }
+
+        // Verificar se a apólice já não foi cancelada
+        if ($apolice->status === 'Cancelada') {
+            return redirect()->route('profile.show')->with('status', 'Esta apólice já está cancelada.');
+        }
+
+        // Atualizar o status da apólice para 'Cancelada'
+        $apolice->update(['status' => 'Cancelada']);
+
+        // Retornar ao perfil com mensagem de sucesso
+        return redirect()->route('profile.edit')->with('status', 'Apólice cancelada com sucesso.');
+    }
+
+
 }

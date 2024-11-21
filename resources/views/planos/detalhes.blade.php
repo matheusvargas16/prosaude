@@ -13,11 +13,20 @@
                     <h1 class="text-2xl font-semibold text-teal-600 mb-4">{{ $plano->nome }}</h1>
                     
                     <div class="mb-4">
-                        <p class="text-lg"><strong>Descrição:</strong> {{ $plano->cobertura }}</p>
                         <p class="text-lg"><strong>Preço:</strong> R$ {{ number_format($plano->preco, 2, ',', '.') }}</p>
                         <p class="text-lg"><strong>Tipo de Plano:</strong> {{ $plano->tipo }}</p>
                     </div>
-                    
+
+                    <!-- Exibição de Benefícios (Cobertura) -->
+                    <div class="mb-4">
+                        <h3 class="text-xl font-semibold text-teal-600">Cobertura / Benefícios</h3>
+                        <ul class="list-disc pl-5">
+                            @foreach (json_decode($plano->cobertura) as $beneficio)
+                                <li class="text-lg">{{ $beneficio }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+
                     <!-- Botão para confirmar a compra -->
                     <a href="{{ route('finalizar.compra', $plano->id) }}" class="inline-block mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg shadow-lg transition duration-200">
                         Comprar Plano

@@ -49,20 +49,28 @@ class PlanoController extends Controller
         // Buscar o plano pelo ID
         $plano = Plano::findOrFail($id);
 
+        // Verificar se o usuário já tem uma apólice ativa e excluí-la
+        $apoliceAtiva = Apolice::where('usuario_id', $user->id)
+                            ->where('status', 'Ativa')
+                            ->first();
+
+        if ($apoliceAtiva) {
+            // Excluir a apólice ativa
+            $apoliceAtiva->delete();
+        }
+
         // Criar a nova apólice vinculada ao usuário e plano, incluindo o preço
         Apolice::create([
             'usuario_id' => $user->id, // A coluna correta é 'usuario_id'
             'plano_id' => $plano->id,
             'preco' => $plano->preco, // Preço da apólice igual ao preço do plano
-            'status' => 'pendente',
+            'status' => 'Ativa', // Status como 'Ativa'
             'datainicio' => now(),
             'datafim' => now()->addYear(),
         ]);
 
         return redirect()->route('profile.edit')->with('success', 'Compra concluída com sucesso! Seu plano foi adicionado à sua conta.');
     }
-
-
 
     // Método para exibir a página de comparação de planos
     public function showComparisonForm()

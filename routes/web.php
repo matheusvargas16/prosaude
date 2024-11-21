@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PlanoController;
+use App\Http\Controllers\ApoliceController;
 use App\Http\Controllers\SuporteController;
 use Illuminate\Support\Facades\Route;
 
@@ -44,14 +45,19 @@ Route::middleware('auth')->group(function () {
     // Rota para exibir um ticket específico
     Route::get('/suporte/{id}', [SuporteController::class, 'show'])->name('suporte.show');
 
-    // Rota para editar um ticket
-    Route::get('/suporte/{id}/editar', [SuporteController::class, 'edit'])->name('suporte.edit');
+    // Rota para exibir o formulário de edição
+    Route::get('/suporte/{id}/edit', [SuporteController::class, 'edit'])->name('suporte.edit');
 
-    // Rota para atualizar um ticket
-    Route::put('/suporte/{id}', [SuporteController::class, 'update'])->name('suporte.edit');
+    // Rota para atualização do ticket
+    Route::put('/suporte/{id}', [SuporteController::class, 'update'])->name('suporte.update');
 
     // Rota para excluir um ticket
-    Route::delete('/suporte/{id}', [SuporteController::class, 'destroy'])->name('suporte.excluir');
+    Route::delete('/suporte/{id}', [SuporteController::class, 'destroy'])->name('suporte.destroy');
+
+    // Rota para cancelar a apólice
+    Route::put('/cancelar-apolice/{id}', [ApoliceController::class, 'cancel'])->name('cancelar.apolice');
+
+    Route::get('/historico-apolices', [ApoliceController::class, 'historico'])->name('historico.apolices');
 
 
 });

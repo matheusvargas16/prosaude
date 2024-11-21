@@ -15,16 +15,26 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): View
+    public function edit()
     {
-        // Obtenha as apólices do usuário autenticado
-        $apolices = Apolice::where('usuario_id', operator: Auth::id())->with('plano')->get();
+        // Recuperar o usuário logado
+        $user = Auth::user(); 
 
-        return view('profile.edit', [
-            'user' => $request->user(),
-            'apolices' => $apolices, // Passe as apólices para a view
-        ]);
+        // Verificar se o usuário está logado
+        if (!$user) {
+            return redirect()->route('login')->withErrors(['msg' => 'Você precisa estar logado para acessar esta página.']);
+        }
+
+        // Buscar as apólices ativas do usuário
+        $apolices = Apolice::where('usuario_id', $user->id)
+                        ->where('status', 'ativa') // Filtrando apenas apólices ativas
+                        ->get();
+
+        // Passando o usuário e as apólices para a view
+        return view('profile.edit', compact('user', 'apolices'));
     }
+
+
 
 
 

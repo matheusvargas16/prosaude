@@ -62,20 +62,31 @@ class SuporteController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'status' => 'required|string',
+        // Valida os dados enviados no formulário
+        $validated = $request->validate([
+            'titulo' => 'required|string|max:255',
             'descricao' => 'required|string',
+            'status' => 'required|in:Aberto,Em andamento,Fechado',
         ]);
 
+        // Busca o ticket pelo ID e atualiza os campos
         $suporte = Suporte::findOrFail($id);
-        $suporte->update($request->all());
-        return redirect()->route('suporte.index');
+        $suporte->update($validated);
+
+        // Redireciona de volta para a lista de tickets com uma mensagem de sucesso
+        return redirect()->route('suporte.index')->with('status', 'Ticket atualizado com sucesso!');
     }
+
+
 
     public function destroy($id)
     {
+        // Busca o ticket pelo ID e o exclui
         $suporte = Suporte::findOrFail($id);
         $suporte->delete();
-        return redirect()->route('suporte.index');
+
+        // Redireciona de volta para a lista de tickets com uma mensagem de sucesso
+        return redirect()->route('suporte.index')->with('status', 'Ticket excluído com sucesso!');
     }
+
 }
