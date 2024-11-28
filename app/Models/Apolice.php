@@ -11,12 +11,14 @@ class Apolice extends Model
 
     // Definindo os campos que podem ser preenchidos
     protected $fillable = [
-        'usuario_id',   // ID do usuário que comprou o plano
-        'plano_id',  // ID do plano comprado
+        'usuario_id',
+        'plano_id',
         'preco',
-        'status',    // Status da apólice (pendente, ativa, cancelada)
-        'datainicio',    // Data de início da apólice
-        'datafim',       // Data de término da apólice (se aplicável)
+        'status',
+        'datainicio',
+        'datafim',
+        'endereco', 
+        'cidade',   
     ];
 
     public function usuario()

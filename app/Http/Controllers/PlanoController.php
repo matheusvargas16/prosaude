@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Apolice;
+use App\Models\User;
 use App\Models\Plano;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -40,37 +41,62 @@ class PlanoController extends Controller
     // Método para confirmar a compra do plano
     public function confirmarCompra(Request $request, $id)
     {
-        // Recuperar o usuário logado
-        $user = Auth::user();
-        if (!$user) {
-            return redirect()->route('login')->withErrors(['msg' => 'É necessário estar logado para concluir a compra.']);
-        }
-
-        // Buscar o plano pelo ID
-        $plano = Plano::findOrFail($id);
-
-        // Verificar se o usuário já tem uma apólice ativa e excluí-la
-        $apoliceAtiva = Apolice::where('usuario_id', $user->id)
-                            ->where('status', 'Ativa')
-                            ->first();
-
-        if ($apoliceAtiva) {
-            // Excluir a apólice ativa
-            $apoliceAtiva->delete();
-        }
-
-        // Criar a nova apólice vinculada ao usuário e plano, incluindo o preço
-        Apolice::create([
-            'usuario_id' => $user->id, // A coluna correta é 'usuario_id'
-            'plano_id' => $plano->id,
-            'preco' => $plano->preco, // Preço da apólice igual ao preço do plano
-            'status' => 'Ativa', // Status como 'Ativa'
-            'datainicio' => now(),
-            'datafim' => now()->addYear(),
+        // Validar os dados enviados no formulário
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'endereco' => 'required|string|max:255',
+            'cidade' => 'required|string|max:255',
         ]);
-
-        return redirect()->route('profile.edit')->with('success', 'Compra concluída com sucesso! Seu plano foi adicionado à sua conta.');
+    
+        // Recuperar o plano pelo ID
+        $plano = Plano::findOrFail($id);
+    
+        // Dados do comprador (usuário autenticado)
+        $usuario = auth()->user();
+    
+        // Verificar se o usuário já tem uma apólice ativa
+        $apoliceAtiva = Apolice::where('usuario_id', $usuario->id)
+                                ->where('status', 'ativa')
+                                ->first();
+    
+        if ($apoliceAtiva) {
+            // Cancelar a apólice ativa anterior
+            $apoliceAtiva->update(['status' => 'cancelada']);
+        }
+    
+        // Criar a nova apólice com os dados fornecidos
+        $apolice = Apolice::create([
+            'usuario_id' => $usuario->id,
+            'plano_id' => $plano->id,
+            'preco' => $plano->preco,
+            'status' => 'ativa', // Definindo status da apólice como ativa
+            'datainicio' => now(),
+            'datafim' => now()->addYear(), // Definindo a data de fim como 1 ano após a data de início
+            'endereco' => $validated['endereco'], // Endereço fornecido pelo usuário
+            'cidade' => $validated['cidade'], // Cidade fornecida pelo usuário
+        ]);
+    
+        // Dados para exibição na página de confirmação
+        // Dados para exibição na página de confirmação
+        $apoliceData = [
+            'id_plano' => $plano->id,
+            'nome_comprador' => $usuario->name,
+            'endereco_comprador' => $validated['endereco'],
+            'cidade_comprador' => $validated['cidade'],
+            'nome_plano' => $plano->nome,
+            'tipo_plano' => $plano->tipo,
+            'preco_plano' => number_format($plano->preco, 2, ',', '.'),
+            'beneficios' => json_decode($plano->cobertura),
+            'data_compra' => now()->format('d/m/Y'),
+            'data_vencimento' => $apolice->datafim->format('d/m/Y'), // Formata a data de vencimento
+        ];
+        // Redireciona para a página de confirmação, passando os dados da apólice
+        return view('apolices.detalhes', compact('apoliceData'));
     }
+    
+
+
+
 
     // Método para exibir a página de comparação de planos
     public function showComparisonForm()

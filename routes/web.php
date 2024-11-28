@@ -60,6 +60,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/historico-apolices', [ApoliceController::class, 'historico'])->name('historico.apolices');
 
 
+
+    Route::post('/compra/{id}/finalizar', [PlanoController::class, 'confirmarCompra'])->name('confirmar.compra');
+    Route::get('/apolice/gerar/{id}', [ApoliceController::class, 'gerarApolice'])->name('apolice.gerar');
+
+
+    Route::get('/apolice/{id}/renovar', [ApoliceController::class, 'mostrarRenovacao'])->name('apolice.renovar');
+    Route::put('/apolice/{id}/renovar/confirmar', [ApoliceController::class, 'renovar'])->name('apolice.renovar.confirmar');
+
+
 });
 
 Route::middleware('auth')->group(function () {

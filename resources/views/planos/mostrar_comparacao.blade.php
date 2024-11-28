@@ -16,9 +16,14 @@
                     <p class="text-lg">
                         <strong class="text-teal-800">Tipo:</strong> <span class="text-gray-800">{{ $plano->tipo }}</span>
                     </p>
-                    <p class="text-lg">
-                        <strong class="text-teal-800">Benefícios:</strong> <span class="text-gray-800">{{ $plano->cobertura }}</span>
-                    </p>
+                    <div class="text-lg">
+                        <strong class="text-teal-800">Benefícios:</strong>
+                        <ul class="list-disc pl-5 text-gray-800">
+                            @foreach (json_decode($plano->cobertura) as $beneficio)
+                                <li>{{ $beneficio }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                     <p class="text-lg">
                         <strong class="text-teal-800">Faixa Etária:</strong> <span class="text-gray-800">{{ $plano->faixaetaria }}</span>
                     </p>

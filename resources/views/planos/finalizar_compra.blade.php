@@ -31,6 +31,11 @@
                             <x-text-input id="endereco" name="endereco" type="text" class="mt-1 block w-full" required />
                         </div>
                     
+                        <div class="mb-4">
+                            <x-input-label for="cidade" :value="__('Cidade')" />
+                            <x-text-input id="cidade" name="cidade" type="text" class="mt-1 block w-full" required />
+                        </div>
+                    
                         <button type="submit" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg">
                             Confirmar Compra
                         </button>

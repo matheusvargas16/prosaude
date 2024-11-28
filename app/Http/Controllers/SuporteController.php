@@ -66,7 +66,6 @@ class SuporteController extends Controller
         $validated = $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao' => 'required|string',
-            'status' => 'required|in:Aberto,Em andamento,Fechado',
         ]);
 
         // Busca o ticket pelo ID e atualiza os campos
