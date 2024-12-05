@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
+
 
 class User extends Authenticatable
 {
     use Notifiable;
+
+    use HasRoles;
 
     protected $fillable = [
         'name',
@@ -33,6 +37,12 @@ class User extends Authenticatable
     public function apolice()
     {
         return $this->hasMany(Apolice::class);
+    }
+
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 
 }

@@ -21,6 +21,16 @@
             <p class="text-lg mt-4"><strong>Descrição:</strong></p>
             <p class="text-lg text-gray-600">{{ $suporte->descricao }}</p>
 
+            <!-- Resolução do Ticket -->
+            <div class="mt-6">
+                <p class="text-lg"><strong>Resolução:</strong></p>
+                @if($suporte->resolucao)
+                    <p class="text-lg text-gray-600">{{ $suporte->resolucao }}</p>
+                @else
+                    <p class="text-lg text-gray-600">Problema sendo analisado</p>
+                @endif
+            </div>
+
             <!-- Ações do Ticket -->
             <div class="mt-6 flex justify-center gap-4">
                 <a href="{{ route('suporte.index') }}" class="bg-teal-500 text-white px-6 py-2 rounded hover:bg-teal-600 transition duration-300">

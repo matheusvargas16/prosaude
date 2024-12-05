@@ -4,6 +4,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PlanoController;
 use App\Http\Controllers\ApoliceController;
 use App\Http\Controllers\SuporteController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\PlanosController;
+use App\Http\Controllers\Admin\SuporteAdminController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -71,10 +75,53 @@ Route::middleware('auth')->group(function () {
 
 });
 
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    // Dashboard do admin
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+
+    // Gerenciamento de usuários
+    Route::get('/admin/usuarios', [UserController::class, 'index'])->name('admin.usuarios.index');
+    Route::get('/admin/usuarios/create', [UserController::class, 'create'])->name('admin.usuarios.create');
+    Route::post('/admin/usuarios', [UserController::class, 'store'])->name('admin.usuarios.store');
+    Route::get('/admin/usuarios/{user}/edit', [UserController::class, 'edit'])->name('admin.usuarios.edit');
+    Route::put('/admin/usuarios/{user}', [UserController::class, 'update'])->name('admin.usuarios.update');
+    Route::delete('/admin/usuarios/{user}', [UserController::class, 'destroy'])->name('admin.usuarios.destroy');
+    
+    // Gerenciamento de planos
+    Route::get('/admin/planos', [PlanosController::class, 'index'])->name('admin.planos.index');
+    Route::get('/admin/planos/create', [PlanosController::class, 'create'])->name('admin.planos.create');
+    Route::post('/admin/planos', [PlanosController::class, 'store'])->name('admin.planos.store');
+    Route::get('/admin/planos/{plano}/edit', [PlanosController::class, 'edit'])->name('admin.planos.edit');
+    Route::put('/admin/planos/{plano}', [PlanosController::class, 'update'])->name('admin.planos.update');
+    Route::delete('/admin/planos/{plano}', [PlanosController::class, 'destroy'])->name('admin.planos.destroy');
+    
+    // Gerenciamento de suporte (tickets)
+    Route::get('/admin/suporte', [SuporteAdminController::class, 'index'])->name('admin.suporte.index');
+    Route::put('/admin/suporte/{suporte}', [SuporteAdminController::class, 'update'])->name('admin.suporte.update');
+    Route::delete('/admin/suporte/{ticket}', [SuporteAdminController::class, 'destroy'])->name('admin.suporte.destroy');
+    // Rota para exibir a página de resolução
+    Route::get('/admin/suporte/{suporte}/resolve', [SuporteAdminController::class, 'resolvePage'])->name('admin.suporte.resolvePage');
+
+    // Rota para processar o formulário de resolução
+    Route::post('/admin/suporte/{suporte}/resolve', [SuporteAdminController::class, 'resolve'])->name('admin.suporte.resolve');
+
+
+});
+
+
+
+
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('admin.profile.edit');
+    });
 });
 
 require __DIR__.'/auth.php';

@@ -5,34 +5,42 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <!-- Logo com o ícone -->
                     <a href="{{ route('dashboard') }}">
                         <i class="fa-solid fa-hand-holding-medical text-4xl" style="color: rgb(220 38 38);"></i>
                     </a>
                 </div>
-                
-                
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-
-                    <!-- Novo link Comprar -->
-                    <x-nav-link :href="route('comprar.planos')" :active="request()->routeIs('comprar.planos')">
-                        {{ __('Comprar') }}
-                    </x-nav-link>
-
-                    <!-- Novo link Pesquisar Planos -->
-                    <x-nav-link :href="route('pesquisarPlanos')" :active="request()->routeIs('pesquisarPlanos')">
-                        {{ __('Pesquisar Planos') }}
-                    </x-nav-link>
-
-                    <!-- Novo link Suporte -->
-                    <x-nav-link :href="route('suporte.index')" :active="request()->routeIs('suporte.index')">
-                        {{ __('Suporte') }}
-                    </x-nav-link>
+                    @if(auth()->check() && auth()->user()->role == 'admin')
+                        <!-- Links exclusivos para Admin -->
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                            {{ __('Admin Dashboard') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.usuarios.index')" :active="request()->routeIs('admin.usuarios.index')">
+                            {{ __('Usuários') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.planos.index')" :active="request()->routeIs('admin.planos.index')">
+                            {{ __('Planos de Saúde') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.suporte.index')" :active="request()->routeIs('admin.suporte.index')">
+                            {{ __('Suporte Admin') }}
+                        </x-nav-link>
+                    @else
+                        <!-- Links para Usuários Comuns -->
+                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('comprar.planos')" :active="request()->routeIs('comprar.planos')">
+                            {{ __('Comprar') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('pesquisarPlanos')" :active="request()->routeIs('pesquisarPlanos')">
+                            {{ __('Pesquisar Planos') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('suporte.index')" :active="request()->routeIs('suporte.index')">
+                            {{ __('Suporte') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -45,7 +53,7 @@
 
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
                             </div>
                         </button>
@@ -85,24 +93,35 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-
-            <!-- Novo link Comprar (versão mobile) -->
-            <x-responsive-nav-link :href="route('comprar.planos')" :active="request()->routeIs('comprar.planos')">
-                {{ __('Comprar') }}
-            </x-responsive-nav-link>
-
-            <!-- Novo link Pesquisar Planos (versão mobile) -->
-            <x-responsive-nav-link :href="route('pesquisarPlanos')" :active="request()->routeIs('pesquisarPlanos')">
-                {{ __('Pesquisar Planos') }}
-            </x-responsive-nav-link>
-
-            <!-- Novo link Suporte (versão mobile) -->
-            <x-responsive-nav-link :href="route('suporte.index')" :active="request()->routeIs('suporte.index')">
-                {{ __('Suporte') }}
-            </x-responsive-nav-link>
+            @if(auth()->check() && auth()->user()->role == 'admin')
+                <!-- Links exclusivos para Admin (versão mobile) -->
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                    {{ __('Admin Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.usuarios.index')" :active="request()->routeIs('admin.usuarios.index')">
+                    {{ __('Usuários') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.planos.index')" :active="request()->routeIs('admin.planos.index')">
+                    {{ __('Planos de Saúde') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.suporte.index')" :active="request()->routeIs('admin.suporte.index')">
+                    {{ __('Suporte Admin') }}
+                </x-responsive-nav-link>
+            @else
+                <!-- Links para Usuários Comuns (versão mobile) -->
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('comprar.planos')" :active="request()->routeIs('comprar.planos')">
+                    {{ __('Comprar') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('pesquisarPlanos')" :active="request()->routeIs('pesquisarPlanos')">
+                    {{ __('Pesquisar Planos') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('suporte.index')" :active="request()->routeIs('suporte.index')">
+                    {{ __('Suporte') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

@@ -19,8 +19,16 @@
                     <div class="text-lg">
                         <strong class="text-teal-800">Benefícios:</strong>
                         <ul class="list-disc pl-5 text-gray-800">
-                            @foreach (json_decode($plano->cobertura) as $beneficio)
-                                <li>{{ $beneficio }}</li>
+                            @php
+                                // Tenta decodificar como JSON
+                                $beneficios = json_decode($plano->cobertura, true);
+                                // Se não for JSON válido, divide por vírgulas
+                                if (is_null($beneficios)) {
+                                    $beneficios = explode(',', $plano->cobertura);
+                                }
+                            @endphp
+                            @foreach ($beneficios as $beneficio)
+                                <li>{{ trim($beneficio) }}</li>
                             @endforeach
                         </ul>
                     </div>

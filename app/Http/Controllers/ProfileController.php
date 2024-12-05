@@ -18,21 +18,28 @@ class ProfileController extends Controller
     public function edit()
     {
         // Recuperar o usuário logado
-        $user = Auth::user(); 
+        $user = Auth::user();
 
         // Verificar se o usuário está logado
         if (!$user) {
             return redirect()->route('login')->withErrors(['msg' => 'Você precisa estar logado para acessar esta página.']);
         }
 
-        // Buscar as apólices ativas do usuário
+        // Verificar se o usuário é administrador
+        if ($user->role === 'admin') {
+            // Buscar informações específicas para o administrador, se necessário
+            return view('admin.profile.edit', compact('user'));
+        }
+
+        // Buscar as apólices ativas do usuário (usuário comum)
         $apolices = Apolice::where('usuario_id', $user->id)
                         ->where('status', 'ativa') // Filtrando apenas apólices ativas
                         ->get();
 
-        // Passando o usuário e as apólices para a view
+        // Passando o usuário e as apólices para a view de usuário comum
         return view('profile.edit', compact('user', 'apolices'));
     }
+
 
 
 

@@ -21,8 +21,16 @@
                     <div class="mb-4">
                         <h3 class="text-xl font-semibold text-teal-600">Cobertura / Benefícios</h3>
                         <ul class="list-disc pl-5">
-                            @foreach (json_decode($plano->cobertura) as $beneficio)
-                                <li class="text-lg">{{ $beneficio }}</li>
+                            @php
+                                // Tenta decodificar como JSON
+                                $beneficios = json_decode($plano->cobertura, true);
+                                // Se não for JSON válido, divide por vírgulas
+                                if (is_null($beneficios)) {
+                                    $beneficios = explode(',', $plano->cobertura);
+                                }
+                            @endphp
+                            @foreach ($beneficios as $beneficio)
+                                <li class="text-lg">{{ trim($beneficio) }}</li>
                             @endforeach
                         </ul>
                     </div>
