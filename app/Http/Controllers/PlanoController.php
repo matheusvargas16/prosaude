@@ -145,34 +145,56 @@ class PlanoController extends Controller
             $filtrosAplicados .= "Tipo: Todos; ";
         }
 
-        // Filtro de faixa etária (aplicado somente se estiver preenchido)
-        if ($request->filled('faixaetaria')) {
-            if (strpos($request->faixaetaria, '-') !== false) {
-                [$idadeMinFiltro, $idadeMaxFiltro] = explode('-', $request->faixaetaria);
-                $planos->where(function ($query) use ($idadeMinFiltro, $idadeMaxFiltro) {
-                    $query->whereRaw("CAST(SUBSTRING_INDEX(faixaetaria, '-', 1) AS UNSIGNED) <= ?", [$idadeMaxFiltro])
-                        ->whereRaw("CAST(SUBSTRING_INDEX(faixaetaria, '-', -1) AS UNSIGNED) >= ?", [$idadeMinFiltro]);
+        // Filtro de faixa etária
+        if ($request->filled('faixa_etaria')) {
+            $faixaEtaria = $request->faixa_etaria;
+
+            if (strpos($faixaEtaria, '+') !== false) {
+                // Caso especial para faixas como "65+"
+                $idadeMin = (int) rtrim($faixaEtaria, '+'); // Remove o "+"
+                $planos->whereRaw("CAST(SUBSTRING_INDEX(faixaetaria, '-', -1) AS UNSIGNED) >= ?", [$idadeMin])
+                    ->where('faixaetaria', 'NOT LIKE', '%-%'); // Exclui faixas com traço
+                $filtrosAplicados .= "Faixa Etária: " . $faixaEtaria . "; ";
+            } elseif (strpos($faixaEtaria, '-') !== false) {
+                // Faixa etária no formato "X-Y"
+                [$idadeMin, $idadeMax] = explode('-', $faixaEtaria);
+                $planos->where(function ($query) use ($idadeMin, $idadeMax) {
+                    $query->whereRaw("CAST(SUBSTRING_INDEX(faixaetaria, '-', 1) AS UNSIGNED) <= ?", [$idadeMax])
+                        ->whereRaw("CAST(SUBSTRING_INDEX(faixaetaria, '-', -1) AS UNSIGNED) >= ?", [$idadeMin]);
                 });
-                $filtrosAplicados .= "Faixa Etária: " . $request->faixaetaria . "; ";
+                $filtrosAplicados .= "Faixa Etária: " . $faixaEtaria . "; ";
             } else {
-                $idadeMinFiltro = (int) $request->faixaetaria;
-                $planos->whereRaw("CAST(SUBSTRING_INDEX(faixaetaria, '-', -1) AS UNSIGNED) >= ?", [$idadeMinFiltro]);
-                $filtrosAplicados .= "Faixa Etária: " . $request->faixaetaria . "; ";
+                // Caso de idade mínima específica
+                $idadeMin = (int) $faixaEtaria;
+                $planos->whereRaw("CAST(SUBSTRING_INDEX(faixaetaria, '-', -1) AS UNSIGNED) >= ?", [$idadeMin]);
+                $filtrosAplicados .= "Faixa Etária: " . $faixaEtaria . "; ";
             }
         } else {
-            $filtrosAplicados .= "Faixa Etária: Todas";
+            $filtrosAplicados .= "Faixa Etária: Todas; ";
+        }
+
+        // Filtro de preço máximo
+        if ($request->filled('preco_max')) {
+            $planos->where('preco', '<=', $request->preco_max);
+            $filtrosAplicados .= "Preço Máximo: R$ " . number_format($request->preco_max, 2, ',', '.') . "; ";
+        }
+
+        // Filtro de benefícios
+        if ($request->filled('beneficio')) {
+            $planos->where('cobertura', 'LIKE', '%' . $request->beneficio . '%');
+            $filtrosAplicados .= "Benefício: " . ucfirst($request->beneficio) . "; ";
         }
 
         // Executa a consulta e obtém os resultados
         $resultados = $planos->get();
 
-        // Se não houver resultados, exibe uma mensagem informativa
-        if ($resultados->isEmpty()) {
-            return view('planos.pesquisar', compact('tipos', 'faixaEtarias'))
-                ->with('mensagem', 'Nenhum plano encontrado com os critérios selecionados.')
-                ->with('filtrosAplicados', $filtrosAplicados);
-        }
-
-        return view('planos.pesquisar', compact('resultados', 'tipos', 'faixaEtarias', 'filtrosAplicados'));
+        // Retorna a view com os dados e a mensagem de filtros aplicados
+        return view('planos.pesquisar', compact('resultados', 'tipos', 'faixaEtarias', 'filtrosAplicados'))
+            ->with('mensagem', $resultados->isEmpty() ? 'Nenhum plano encontrado com os critérios selecionados.' : null);
     }
+
+
+
+
+
 }

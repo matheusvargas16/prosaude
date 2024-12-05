@@ -47,12 +47,6 @@
                             <input type="number" name="preco_max" step="0.01" placeholder="Ex.: 500.00" class="w-full p-2 border rounded border-blue-200" style="background-color: #e0f2fe;">
                         </div>
 
-                        <!-- Benefícios -->
-                        <div class="mb-4">
-                            <label class="block text-gray-700">Benefício:</label>
-                            <input type="text" name="beneficio" placeholder="Ex.: Internação, Pediatria" class="w-full p-2 border rounded border-blue-200" style="background-color: #e0f2fe;">
-                        </div>
-
                         <button type="submit" class="bg-blue-500 text-white px-4 py-2 mt-4 rounded hover:bg-blue-600 transition-colors" style="background-color: #0284c7;">Pesquisar</button>
                     </form>
 

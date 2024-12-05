@@ -101,14 +101,8 @@
             </tr>
             <tr>
                 <th>Benefícios</th>
-                <td>
-                    <ul>
-                        @foreach($beneficios as $beneficio)
-                            <li>{{ $beneficio }}</li>
-                        @endforeach
-                    </ul>
-                </td>
-            </tr>
+                <td>{{ $beneficios ?? 'Nenhum benefício informado' }}</td>
+            </tr>            
             <tr>
                 <th>Data de Compra</th>
                 <td>{{ $data_compra }}</td>

@@ -28,23 +28,18 @@ class ApoliceController extends Controller
     
     public function gerarApolice($apoliceId)
     {
-        // Recuperar a apólice pelo ID
-        $apolice = Apolice::with('plano', 'usuario')->findOrFail($apoliceId); // Inclui relações para evitar múltiplas consultas
+        // Recuperar a apólice pelo ID com as relações necessárias
+        $apolice = Apolice::with('plano', 'usuario')->findOrFail($apoliceId);
 
-        // Verificar se a data de fim existe e é válida
-        if (empty($apolice->datafim)) {
-            return redirect()->back()->withErrors(['msg' => 'Data de fim não encontrada ou inválida para a apólice.']);
-        }
+        // Verificar se a data de fim existe ou calcular uma nova
+        $datafim = $apolice->datafim ?? now()->addYear()->format('Y-m-d');
 
-        // Calcular a data de fim (1 ano após a data de início)
-        $datafim = now()->addYear()->format('Y-m-d'); // Adiciona 1 ano à data atual
-
-        // Criar a variável apoliceData com os dados necessários
+        // Criar os dados para a view
         $apoliceData = [
             'nome_plano' => $apolice->plano->nome,
             'tipo_plano' => $apolice->plano->tipo,
             'preco_plano' => number_format($apolice->preco, 2, ',', '.'),
-            'beneficios' => json_decode($apolice->plano->cobertura),
+            'beneficios' => $apolice->plano->cobertura, // Exibir diretamente a cobertura como texto
             'data_geracao' => now()->format('d/m/Y'),
             'nome_comprador' => $apolice->usuario->name,
             'cpf_comprador' => $apolice->usuario->cpf,
@@ -63,6 +58,8 @@ class ApoliceController extends Controller
         // Retornar o PDF como download
         return $pdf->download('apolice_' . $apolice->id . '.pdf');
     }
+
+
 
 
 
